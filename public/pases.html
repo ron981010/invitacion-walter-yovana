@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#f2eee8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Generador de invitaciones · Walter y Yovana" />
+    <meta property="og:description" content="Crea y comparte el enlace personalizado para cada invitado." />
+    <meta property="og:url" content="https://walter-yovana-boda-2026.vercel.app/pases.html" />
+    <meta property="og:image" content="https://walter-yovana-boda-2026.vercel.app/og-nuestra-boda.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Nuestra boda · Walter y Yovana" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Generador de invitaciones · Walter y Yovana" />
+    <meta name="twitter:description" content="Crea y comparte el enlace personalizado para cada invitado." />
+    <meta name="twitter:image" content="https://walter-yovana-boda-2026.vercel.app/og-nuestra-boda.png" />
+    <title>Generador de invitaciones · Walter y Yovana</title>
+    <link rel="icon" href="/assets/client/wax-seal-ochre.png" />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #29231d;
+        --muted: #70675f;
+        --paper: #fffdf9;
+        --canvas: #f2eee8;
+        --sand: #c0a996;
+        --ochre: #9a6e29;
+        --ochre-dark: #6e4c20;
+        --sage: #78816a;
+        --line: rgba(98, 76, 55, 0.2);
+        --shadow: 0 24px 70px rgba(72, 55, 40, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        background: var(--canvas);
+      }
+
+      body {
+        min-height: 100dvh;
+        margin: 0;
+        background:
+          radial-gradient(circle at 14% 8%, rgba(255, 255, 255, 0.92), transparent 28rem),
+          radial-gradient(circle at 92% 92%, rgba(192, 169, 150, 0.24), transparent 30rem),
+          var(--canvas);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .page {
+        width: min(100% - 32px, 720px);
+        margin: 0 auto;
+        padding: clamp(42px, 9vw, 82px) 0 44px;
+      }
+
+      .intro {
+        display: grid;
+        justify-items: center;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .seal {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 14px;
+        object-fit: contain;
+        filter: drop-shadow(0 6px 7px rgba(78, 50, 23, 0.22));
+        transform: rotate(-4deg);
+      }
+
+      .kicker {
+        margin: 0 0 10px;
+        color: var(--ochre-dark);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 620px;
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(34px, 7vw, 58px);
+        font-weight: 400;
+        line-height: 1.02;
+        letter-spacing: -0.035em;
+      }
+
+      .lead {
+        max-width: 560px;
+        margin: 18px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      .panel,
+      .result {
+        border: 1px solid rgba(117, 91, 67, 0.14);
+        border-radius: 24px;
+        background: rgba(255, 253, 249, 0.94);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .panel {
+        padding: clamp(24px, 6vw, 42px);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 150px;
+        gap: 20px;
+      }
+
+      .field {
+        display: grid;
+        gap: 9px;
+      }
+
+      label {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      input {
+        width: 100%;
+        min-height: 54px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        padding: 13px 15px;
+        outline: none;
+        background: #fff;
+        color: var(--ink);
+        font-size: 16px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      input:focus {
+        border-color: var(--ochre);
+        box-shadow: 0 0 0 4px rgba(154, 110, 41, 0.13);
+      }
+
+      input::placeholder {
+        color: #a09992;
+      }
+
+      .hint {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .generate-button,
+      .action,
+      .copy-button {
+        display: inline-flex;
+        min-height: 50px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+
+      .generate-button {
+        width: 100%;
+        margin-top: 28px;
+        border: 1px solid var(--ochre-dark);
+        padding: 14px 24px;
+        background: var(--ochre-dark);
+        box-shadow: 0 9px 24px rgba(110, 76, 32, 0.19);
+        color: #fffdf8;
+        font-size: 15px;
+      }
+
+      .generate-button:hover,
+      .action:hover,
+      .copy-button:hover {
+        transform: translateY(-1px);
+      }
+
+      .generate-button:active,
+      .action:active,
+      .copy-button:active {
+        transform: translateY(0);
+      }
+
+      .generate-button:focus-visible,
+      .action:focus-visible,
+      .copy-button:focus-visible {
+        outline: 3px solid rgba(154, 110, 41, 0.35);
+        outline-offset: 3px;
+      }
+
+      .result {
+        margin-top: 22px;
+        padding: clamp(22px, 5vw, 34px);
+        animation: reveal 0.38s ease both;
+      }
+
+      .result[hidden] {
+        display: none;
+      }
+
+      .result-kicker {
+        margin: 0 0 6px;
+        color: var(--sage);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .result h2 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(25px, 5vw, 34px);
+        font-weight: 400;
+      }
+
+      .summary {
+        margin: 8px 0 22px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .url-label {
+        display: block;
+        margin-bottom: 9px;
+      }
+
+      .url-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+      }
+
+      #generated-url {
+        color: #514941;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 13px;
+      }
+
+      .copy-button {
+        min-width: 112px;
+        border: 1px solid var(--ochre);
+        padding: 11px 18px;
+        background: #fff8ed;
+        color: var(--ochre-dark);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .action {
+        flex: 1 1 170px;
+        border: 1px solid rgba(80, 71, 62, 0.24);
+        padding: 11px 18px;
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .action.share {
+        border-color: rgba(120, 129, 106, 0.48);
+        background: rgba(120, 129, 106, 0.1);
+      }
+
+      .status {
+        min-height: 20px;
+        margin: 12px 0 0;
+        color: var(--sage);
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      footer {
+        max-width: 540px;
+        margin: 24px auto 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+        text-align: center;
+      }
+
+      @keyframes reveal {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 620px) {
+        .page {
+          width: min(100% - 22px, 720px);
+          padding-top: 34px;
+        }
+
+        .form-grid,
+        .url-row {
+          grid-template-columns: 1fr;
+        }
+
+        .copy-button {
+          width: 100%;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="intro">
+        <img class="seal" src="/assets/client/wax-seal-ochre.png" alt="" width="320" height="320" />
+        <p class="kicker">Walter &amp; Yovana</p>
+        <h1>Generador de invitaciones</h1>
+        <p class="lead">
+          Escribe el nombre del invitado y la cantidad de pases. Obtendrás un enlace listo para copiar y compartir.
+        </p>
+      </header>
+
+      <section class="panel" aria-label="Datos de la invitación">
+        <form id="generator-form">
+          <div class="form-grid">
+            <div class="field">
+              <label for="guest-name">Nombre del invitado</label>
+              <input
+                id="guest-name"
+                name="guest-name"
+                type="text"
+                maxlength="64"
+                placeholder="Ej. Javier y esposa"
+                autocomplete="off"
+                autocapitalize="words"
+                required
+              />
+              <p class="hint">Se mostrará exactamente así dentro de la tarjeta del sobre.</p>
+            </div>
+
+            <div class="field">
+              <label for="guest-passes">Número de pases</label>
+              <input id="guest-passes" name="guest-passes" type="number" min="1" max="20" value="2" inputmode="numeric" required />
+              <p class="hint">Entre 1 y 20 personas.</p>
+            </div>
+          </div>
+
+          <button class="generate-button" type="submit">Generar enlace personalizado</button>
+        </form>
+      </section>
+
+      <section id="result" class="result" aria-labelledby="result-title" hidden>
+        <p class="result-kicker">Enlace listo</p>
+        <h2 id="result-title">Invitación personalizada</h2>
+        <p id="summary" class="summary"></p>
+
+        <label class="url-label" for="generated-url">Enlace generado</label>
+        <div class="url-row">
+          <input id="generated-url" type="text" readonly />
+          <button id="copy-link" class="copy-button" type="button">Copiar enlace</button>
+        </div>
+
+        <div class="actions">
+          <a id="open-link" class="action" href="/" target="_blank" rel="noopener noreferrer">Abrir invitación</a>
+          <button id="share-link" class="action share" type="button" hidden>Compartir</button>
+        </div>
+
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <footer>
+        Esta herramienta no guarda datos. El nombre y los pases solamente forman parte del enlace que compartes.
+      </footer>
+    </main>
+
+    <script>
+      (() => {
+        const form = document.querySelector("#generator-form");
+        const nameInput = document.querySelector("#guest-name");
+        const passesInput = document.querySelector("#guest-passes");
+        const result = document.querySelector("#result");
+        const summary = document.querySelector("#summary");
+        const urlInput = document.querySelector("#generated-url");
+        const copyButton = document.querySelector("#copy-link");
+        const openLink = document.querySelector("#open-link");
+        const shareButton = document.querySelector("#share-link");
+        const status = document.querySelector("#status");
+
+        let generatedUrl = "";
+        let generatedName = "";
+        let generatedPasses = 2;
+
+        const normalizeName = (value) => value.trim().replace(/\s+/g, " ").slice(0, 64);
+        const normalizePasses = (value) => Math.min(20, Math.max(1, Number.parseInt(value, 10) || 1));
+
+        const announce = (message) => {
+          status.textContent = message;
+          window.setTimeout(() => {
+            if (status.textContent === message) status.textContent = "";
+          }, 3200);
+        };
+
+        const selectUrl = () => {
+          urlInput.focus();
+          urlInput.select();
+          urlInput.setSelectionRange(0, urlInput.value.length);
+        };
+
+        const copyGeneratedUrl = async () => {
+          if (!generatedUrl) return;
+
+          try {
+            await navigator.clipboard.writeText(generatedUrl);
+          } catch {
+            selectUrl();
+            document.execCommand("copy");
+          }
+
+          copyButton.textContent = "¡Copiado!";
+          announce("Enlace copiado. Ya puedes enviarlo al invitado.");
+          window.setTimeout(() => {
+            copyButton.textContent = "Copiar enlace";
+          }, 1800);
+        };
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          const name = normalizeName(nameInput.value);
+          const passes = normalizePasses(passesInput.value);
+          if (!name) {
+            nameInput.setCustomValidity("Escribe el nombre del invitado.");
+            nameInput.reportValidity();
+            return;
+          }
+
+          nameInput.setCustomValidity("");
+          nameInput.value = name;
+          passesInput.value = String(passes);
+
+          const invitationUrl = new URL("/", window.location.origin);
+          invitationUrl.searchParams.set("p", String(passes));
+          invitationUrl.searchParams.set("n", name);
+
+          generatedUrl = invitationUrl.toString();
+          generatedName = name;
+          generatedPasses = passes;
+
+          urlInput.value = generatedUrl;
+          openLink.href = generatedUrl;
+          summary.textContent = `${name} · ${passes === 1 ? "1 persona" : `${passes} personas`}`;
+          result.hidden = false;
+          result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          copyButton.focus({ preventScroll: true });
+        });
+
+        nameInput.addEventListener("input", () => nameInput.setCustomValidity(""));
+        urlInput.addEventListener("click", selectUrl);
+        copyButton.addEventListener("click", copyGeneratedUrl);
+
+        if (navigator.share) {
+          shareButton.hidden = false;
+          shareButton.addEventListener("click", async () => {
+            if (!generatedUrl) return;
+
+            try {
+              await navigator.share({
+                title: "Invitación de boda · Walter y Yovana",
+                text: `Invitación para ${generatedName} (${generatedPasses === 1 ? "1 persona" : `${generatedPasses} personas`})`,
+                url: generatedUrl,
+              });
+            } catch (error) {
+              if (error && error.name !== "AbortError") announce("No fue posible compartir. Puedes copiar el enlace.");
+            }
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
